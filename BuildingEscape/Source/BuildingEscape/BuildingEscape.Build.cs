@@ -2,6 +2,8 @@
 
 using UnrealBuildTool;
 
+
+
 public class BuildingEscape : ModuleRules
 {
 	public BuildingEscape(TargetInfo Target)
@@ -12,6 +14,8 @@ public class BuildingEscape : ModuleRules
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+		MinFilesUsingPrecompiledHeaderOverride = 1;
+		bFasterWithoutUnity = true;
 		
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
