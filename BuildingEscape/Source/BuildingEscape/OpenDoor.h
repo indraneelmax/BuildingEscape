@@ -5,7 +5,7 @@
 #include "Components/ActorComponent.h"
 #include "OpenDoor.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOpenRequest);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDoorEvent);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDINGESCAPE_API UOpenDoor : public UActorComponent
@@ -27,15 +27,13 @@ public:
 	///what happens is handled in door blueprint
 	///e.g for C++ & Blueprint communication
 	UPROPERTY(BlueprintAssignable)
-		FOnOpenRequest OnOpenRequest;
-
+		FDoorEvent OnOpen;
+	
+	UPROPERTY(BlueprintAssignable)
+		FDoorEvent OnClose;
 private:
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume* PressurePlate = nullptr;
-	UPROPERTY(VisibleAnywhere)
-		float OpenAngle = 90.0f;
-	UPROPERTY(EditAnywhere)
-		float OpenDoorDelay = 1.f;
 
 	float LastOpenDoorTime;
 	AActor *Owner = nullptr;
