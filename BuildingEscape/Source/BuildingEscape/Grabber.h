@@ -18,10 +18,18 @@ public:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	
+	void SetupInputComponent();
+	void FindPhysicsHandleComponent();
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 
 private:
 	float Reach = 100.0f;
-	
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+
+	UInputComponent* InputComponent = nullptr;
+	void Grab();
+	void Release();
+	//Return hit for the first physics body in reach
+	const FHitResult GetFirstPhysicsBodyInReach();
 };
