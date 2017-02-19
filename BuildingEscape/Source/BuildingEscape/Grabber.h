@@ -32,4 +32,12 @@ private:
 	void Release();
 	//Return hit for the first physics body in reach
 	const FHitResult GetFirstPhysicsBodyInReach();
+	///Get the start/origin of player/pawn from where to Reach for Grab
+	FVector GetLineTraceStart();
+	/// Get the end of reach for Grab
+	FVector GetLineTraceEnd();
+
+
 };
+
+

@@ -45,20 +45,8 @@ void UGrabber::Release()
 
 const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 {
-	FVector PlayerViewPointLocation;
-	FRotator PlayerViewPointRotation;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
-		OUT PlayerViewPointLocation,
-		OUT PlayerViewPointRotation
-	);
 
-	/*UE_LOG(LogTemp, Warning, TEXT("Position: %s , Rotation : %s"),*PlayerViewPointLocation.ToString(),
-	*PlayerViewPointRotation.ToString()
-	);*/
-
-	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector()*Reach;
-
-	DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd,
+	DrawDebugLine(GetWorld(), GetLineTraceStart(), GetLineTraceEnd(),
 		FColor(255, 0, 0),
 		false,
 		0.f,
@@ -67,8 +55,8 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 	FHitResult Hit;
 	GetWorld()->LineTraceSingleByObjectType(
 		OUT Hit,
-		PlayerViewPointLocation,
-		LineTraceEnd,
+		GetLineTraceStart(),
+		GetLineTraceEnd(),
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		FCollisionQueryParams(FName(TEXT("")), false, GetOwner())
 	);
@@ -94,11 +82,7 @@ void UGrabber::BeginPlay()
 void UGrabber::FindPhysicsHandleComponent()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle)
-	{
-
-	}
-	else
+	if (PhysicsHandle == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s does not have physics handle component"), *GetOwner()->GetName());
 	}	
@@ -124,6 +108,17 @@ void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
+	// if the physics handle is attached
+	if (PhysicsHandle->GrabbedComponent)
+	{
+		// move the object we are holding
+		PhysicsHandle->SetTargetLocation(GetLineTraceEnd());
+	}
+	
+}
+
+FVector UGrabber::GetLineTraceStart()
+{
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
@@ -134,18 +129,23 @@ void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompon
 	/*UE_LOG(LogTemp, Warning, TEXT("Position: %s , Rotation : %s"),*PlayerViewPointLocation.ToString(),
 	*PlayerViewPointRotation.ToString()
 	);*/
-
-	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector()*Reach;
-
-
-	// if the physics handle is attached
-	if (PhysicsHandle->GrabbedComponent)
-	{
-
-		PhysicsHandle->SetTargetLocation(LineTraceEnd);
-	}
-		// move the object we are holding
-	// ...
+	return PlayerViewPointLocation;
 	
 }
 
+FVector UGrabber::GetLineTraceEnd()
+{
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotation;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		OUT PlayerViewPointLocation,
+		OUT PlayerViewPointRotation
+	);
+
+	/*UE_LOG(LogTemp, Warning, TEXT("Position: %s , Rotation : %s"),*PlayerViewPointLocation.ToString(),
+	*PlayerViewPointRotation.ToString()
+	);*/
+	
+	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector()*Reach;
+	return LineTraceEnd;
+}

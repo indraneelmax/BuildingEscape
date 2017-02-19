@@ -21,6 +21,7 @@ public:
 	
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
+	float GetTotalMassOfActorsOnPlate();
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -32,6 +33,7 @@ private:
 	float LastOpenDoorTime;
 	AActor *Owner;
 	
+	float TriggerMass = 30.f;
 	//UPROPERTY(EditAnywhere)
 	AActor* ActorThatOpens;
 };
